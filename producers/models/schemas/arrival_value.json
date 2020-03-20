@@ -22,7 +22,7 @@
       "name": "prev_station_id",
       "type": [
         "null",
-        "string"
+        "int"
       ],
       "default": null
     },

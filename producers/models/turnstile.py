@@ -31,13 +31,12 @@ class Turnstile(Producer):
 
         
         super().__init__(
-            "obi.transport_optimization.turnstile_events" + station_name,
+            "obi.transport_optimization.turnstile_events." + station_name,
             key_schema=Turnstile.key_schema,
             value_schema=Turnstile.value_schema,
             num_partitions=1,
             num_replicas=1,
         )
-        print(self.topic_name)
         self.station = station
         self.turnstile_hardware = TurnstileHardware(station)
 
@@ -48,10 +47,10 @@ class Turnstile(Producer):
         for _ in range(num_entries):
             self.producer.produce(
                 topic=self.topic_name,
-                key="timestamp",
+                key={"timestamp": str(timestamp)},
                 value=
                   {
-                      "timestamp": timestamp,
+                     "timestamp": str(timestamp),
                      "station_id": self.station.station_id,
                      "station_name": self.station.name,
                   }

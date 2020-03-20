@@ -47,12 +47,6 @@ class Station(Producer):
 
     def run(self, train, direction, prev_station_id, prev_direction):
         """Simulates train arrivals at this station"""
-        print(self.topic_name)
-        print(self.station_id)
-        print(train.train_id)
-        print(direction)
-        print(prev_station_id)
-        print(prev_direction)
         self.producer.produce(
             topic=self.topic_name,
             key={"timestamp": self.time_millis()},
