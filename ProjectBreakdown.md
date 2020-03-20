@@ -83,6 +83,12 @@ Messages hit Lines first, and then get passed on to one of the three Line object
 Accepted topics are: `*org.chicago.cta.station*` and `TURNSTILE_SUMMARY`.  
 
 
+## `server.py` dependencies
+
+These are all the preconditions for `python consumers/server.py` not crashing.  
+
+1. "TURNSTILE_SUMMARY" topic exists
+
 
 ## Project milestones - completion
 - [x] Schema for turnstile event defined
