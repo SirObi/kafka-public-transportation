@@ -1,3 +1,17 @@
 {
-  "TODO": "Complete this Schema! (Make sure to delete this Key/Value Pair!"
+  "type": "record",
+  "namespace": "obi.transport_optimization.weather_updates",
+  "name": "weather",
+  "fields": [
+    {
+      "name": "temperature",
+      "type": "float",
+      "default": 0.0
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "default": ""
+    }
+  ]
 }
