@@ -59,14 +59,15 @@ class Producer:
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
-        if self.topic_name not in self.existing_topics:
-            new_topic = NewTopic(
-                self.topic_name,
-                num_partitions=self.num_partitions,
-                replication_factor=self.num_replicas,
-            )
+        #if self.topic_name not in self.existing_topics:
+        new_topic = NewTopic(
+            self.topic_name,
+            num_partitions=self.num_partitions,
+            replication_factor=self.num_replicas,
+        )
         admin = AdminClient({"bootstrap.servers": "PLAINTEXT://localhost:9092"})
         admin.create_topics([new_topic])
+
 
     def time_millis(self):
         return int(round(time.time() * 1000))

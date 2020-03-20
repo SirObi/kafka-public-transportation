@@ -1,5 +1,5 @@
 {
-  "namespace": "com.udacity",
+  "namespace": "obi.transport_optimization.arrivals",
   "type": "record",
   "name": "arrival.key",
   "fields": [

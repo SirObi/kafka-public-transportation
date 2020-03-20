@@ -1,3 +1,39 @@
 {
-  "TODO": "Complete this Schema! (Make sure to delete this Key/Value Pair!"
+  "type": "record",
+  "name": "arrival",
+  "namespace": "obi.transport_optimization.arrivals",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "int",
+      "default": -1
+    },
+    {
+      "name": "train_id",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "direction",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "prev_station_id",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "prev_direction",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+  ]
 }
+
