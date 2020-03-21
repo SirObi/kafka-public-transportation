@@ -85,9 +85,9 @@ Accepted topics are: `*org.chicago.cta.station*` and `TURNSTILE_SUMMARY`.
 
 ## `server.py` dependencies
 
-These are all the preconditions for `python consumers/server.py` not crashing.  
-
+These are the preconditions for `python consumers/server.py` not crashing.  
 1. "TURNSTILE_SUMMARY" topic exists
+2. Faust Streaming aggregation table exists
 
 
 ## Architecture - Kafka Producers  
