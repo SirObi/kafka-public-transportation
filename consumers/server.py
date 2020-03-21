@@ -68,7 +68,7 @@ def run_server():
             offset_earliest=True,
         ),
         KafkaConsumer(
-            "obi.transport_optimization.chicago.cta.stations.table.v1",
+            "obi.transport_optimization.chicago.cta.stations.table.v2",
             lines.process_message,
             offset_earliest=True,
             is_avro=False,
