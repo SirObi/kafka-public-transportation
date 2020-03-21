@@ -29,20 +29,17 @@ class TransformedStation(faust.Record):
     line: str
 
 
-# TODO: Define a Faust Stream that ingests data from the Kafka Connect stations topic and
-#   places it into a new topic with only the necessary information.
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
-# TODO: Define the input Kafka Topic. Hint: What topic did Kafka Connect output to?
-# topic = app.topic("TODO", value_type=Station)
-# TODO: Define the output Kafka Topic
-# out_topic = app.topic("TODO", partitions=1)
-# TODO: Define a Faust Table
-#table = app.Table(
-#    # "TODO",
-#    # default=TODO,
-#    partitions=1,
-#    changelog_topic=out_topic,
-#)
+input_topic = app.topic("obi.transport_optimization.chicago.cta.stations.table.v1stations", value_type=Station)
+
+output_topic = app.topic("obi.transport_optimization.chicago.cta.stations.table.v2", partitions=1)
+
+table = app.Table(
+    'stations_cleaned',
+    default=TransformedStation,
+    partitions=1,
+    changelog_topic=output_topic,
+)
 
 
 #
@@ -52,6 +49,24 @@ app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memor
 # then you would set the `line` of the `TransformedStation` record to the string `"red"`
 #
 #
+
+@app.agent(input_topic)
+async def process(tables):
+    async for value in tables:
+        line_colours = {"red": value.red, "blue": value.blue, "green": value.green}
+        try:
+            colour = [k for (k,v) in line_colours.items() if v == True][0]
+        except Exception as e:
+            print(e)
+            print(f"Stop {value.stop_id} is not on one of lines: {line_colours.keys()}")
+            continue
+        td_station = TransformedStation(
+            value.station_id,
+            value.station_name,
+            value.order,
+            colour
+        )
+        print(td_station)
 
 
 if __name__ == "__main__":
