@@ -39,7 +39,7 @@ the sole focus of this project is to showcase the different parts of Kafka, and 
 **When** a new event has arrived in the Kafka topic  
 **Then** the event is joined on the table ....?
 
-## Architecture  
+## Architecture - Kafka Consumers
 There are two classes in the server code that handle incoming messages from a Kafka topic: Line and Weather.  
 
 ### Line
@@ -90,13 +90,36 @@ These are all the preconditions for `python consumers/server.py` not crashing.
 1. "TURNSTILE_SUMMARY" topic exists
 
 
+## Architecture - Kafka Producers  
+
+### Weather class + REST Proxy  
+The Weather class is not a Kafka Producer.    
+It's written in vanilla Python and simply simulates old hardware.  
+The class sends weather events to the Kafka REST server in the form of POST requests.  
+The requests include both the payload, and the AVRO schema to read it with.  
+
+Kafka REST Proxy has all the client functionality required to parse the requests, create a new topic, and write the events to the topic.  
+
 ## Project milestones - completion
-- [x] Schema for turnstile event defined
-...
-- [ ] Correctly named Kafka topic exists for each station in the simulation/in the database  
-- [ ] Kafka REST Proxy creates and populates a topic with events containing {temperature, status}
-...
+1. Create Kafka Producers
+- [x] Properly defined schema for arrival events  
+- [x] Properly defined schema for turnstile events  
+- [x] Station producer implemented
+- [x] Correctly named Kafka topic exists for each station in the simulation/in the database  
+- [x] simulation.py is able to populate topics with arrival and turnstile events
+
+2. Configure Kafka REST Proxy Producer
+- [x] Kafka REST Proxy creates and populates a topic with events containing {temperature, status}
+
+3. Configure Kafka Connect
+
+4. Configure the Faust Stream Processor
+
+5. Configure the KSQL Table
 - [ ] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station (+direction?)
+
+6. End-to-end success
+
 - [ ] Dashboard displays list of stations on the Blue line
 - [ ] Emitting new turnstile event causes dashboard to update
 - [ ] simulation.py works and doesn't crash after 1 minute
