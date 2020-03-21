@@ -112,8 +112,14 @@ Kafka REST Proxy has all the client functionality required to parse the requests
 - [x] Kafka REST Proxy creates and populates a topic with events containing {temperature, status}
 
 3. Configure Kafka Connect
+- [x] Connector with appropriate name gets created on Kafka Connect server  
+- [x] Connector ingests data from Postgres, creates a new topic  
+- [x] New topic contains station data  
 
-4. Configure the Faust Stream Processor
+4. Configure Faust Stream Processor
+- [] Stream processor able to print out records from stations topic  
+- [] Logic to filter out unnecessary Station fields implemented  
+- [] TransformedStation data is persisted in Faust table 
 
 5. Configure the KSQL Table
 - [ ] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station (+direction?)
