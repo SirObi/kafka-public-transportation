@@ -31,7 +31,7 @@ class Weather(Producer):
 
     def __init__(self, month):
         super().__init__(
-            topic_name = f"obi.transport_optimization.weather_updates",
+            topic_name = "obi.transport_optimization.weather_updates",
             key_schema=None,
             value_schema=None,
             num_partitions=1,
