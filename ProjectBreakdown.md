@@ -3,13 +3,18 @@ Therefore, I've created this document to help the reader understand the various 
 This guide was also meant to help me keep track of what needed to be done, in a BDD fashion.
 
 ### End goal
-**Given** I have access to a stream of arrival events from turnstile hardware  
+**As a** Chicago Transport Authority executive  
+**I would like to** have a website that displays train arrivals and people getting off the trains in real time  
+**So that** I can have a more intuitive understanding of how people flow through my transportation system   
+
+**Given** I have access to a stream of train arrival events from train sensors on station  
+**And** I have access to a stream of turnstile events from people walking through the turnstiles  
 **And** I have access to a weather data REST server  
-**And** I have information about train stations in a static table  
+**And** I have information about all Chicago train stations in a static table  
 **When** I start a server with a dashboard  
-**Then** the dashboard displays a list of stations with line colours  
+**Then** the dashboard displays a list of stations on lines "Red", "Green" and "Blue"  
 **And** the dashboard displays train arrivals at each station in real time  
-**And** the dashboard displays total arrivals at given station in a certain time window  
+**And** the dashboard displays total number of people who have got off at the station so far  
 **And** the dashboard displays current weather  
 
 ### Note
@@ -142,7 +147,6 @@ Or at least the client side creating and uploading the schemas to the Schema Reg
 
 6. End-to-end success
 
-- [ ] Dashboard displays list of stations on the Blue line
+- [x] Dashboard displays list of stations on the Blue, Red and Green lines
 - [ ] Emitting new turnstile event causes dashboard to update
 - [ ] simulation.py works and doesn't crash after 1 minute
- 
