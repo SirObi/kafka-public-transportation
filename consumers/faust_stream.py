@@ -23,10 +23,10 @@ class Station(faust.Record):
 
 # Faust will produce records to Kafka in this format
 class TransformedStation(faust.Record):
-    station_id: int
-    station_name: str
-    order: int
-    line: str
+    station_id: int = 0
+    station_name: str = ""
+    order: int = 0
+    line: str = ""
 
 
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
@@ -60,13 +60,13 @@ async def process(tables):
             print(e)
             print(f"Stop {value.stop_id} is not on one of lines: {line_colours.keys()}")
             continue
-        td_station = TransformedStation(
+        transformed_station = TransformedStation(
             value.station_id,
             value.station_name,
             value.order,
             colour
         )
-        print(td_station)
+        table.update({transformed_station.station_id: transformed_station})
 
 
 if __name__ == "__main__":
