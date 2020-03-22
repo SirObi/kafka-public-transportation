@@ -21,35 +21,55 @@ KSQL_URL = "http://localhost:8088"
 #       Make sure to cast the COUNT of station id to `count`
 #       Make sure to set the value format to JSON
 
-KSQL_STATEMENT = """
-CREATE TABLE turnstile (
-    ???
-) WITH (
-    ???
-);
 
-CREATE TABLE turnstile_summary
-WITH (???) AS
-    ???
+
+KSQL_STATEMENTS = [
 """
+SET 'auto.offset.reset' = 'earliest';
+""",
+"""
+CREATE TABLE turnstile (
+    timestamp VARCHAR,
+    station_id BIGINT,
+    station_name VARCHAR
+) WITH (
+    kafka_topic='obi.transport_optimization.turnstile_events',
+    value_format='AVRO',
+    key='timestamp'
+);
+""",
+"""
+CREATE TABLE turnstile_summary
+WITH (
+      value_format='JSON'
+)
+AS
+    SELECT station_id, count(*) as count FROM turnstile
+    GROUP BY station_id
+;
+"""
+]
 
 
-def execute_statement():
+def execute_statement(statement):
     """Executes the KSQL statement against the KSQL API"""
     if topic_check.topic_exists("TURNSTILE_SUMMARY") is True:
         return
 
     logging.debug("executing ksql statement...")
 
+    data = json.dumps(
+            {
+                "ksql": statement,
+                "streamsProperties": {"ksql.streams.auto.offset.reset": "earliest"},
+            }
+        )
+
+    logger.info(f"statement was {statement}")
     resp = requests.post(
         f"{KSQL_URL}/ksql",
         headers={"Content-Type": "application/vnd.ksql.v1+json"},
-        data=json.dumps(
-            {
-                "ksql": KSQL_STATEMENT,
-                "streamsProperties": {"ksql.streams.auto.offset.reset": "earliest"},
-            }
-        ),
+        data=data,
     )
 
     # Ensure that a 2XX status code was returned
@@ -57,4 +77,5 @@ def execute_statement():
 
 
 if __name__ == "__main__":
-    execute_statement()
+    for statement in KSQL_STATEMENTS:
+        execute_statement(statement)

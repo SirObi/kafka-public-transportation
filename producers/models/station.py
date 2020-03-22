@@ -17,7 +17,7 @@ class Station(Producer):
     key_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/arrival_key.json")
     value_schema = avro.load(f"{Path(__file__).parents[0]}/schemas/arrival_value.json")
 
-    def __init__(self, station_id, name, color, direction_a=None, direction_b=None):
+    def __init__(self, station_id, name, colour, direction_a=None, direction_b=None):
         self.name = name
         station_name = (
             self.name.lower()
@@ -37,7 +37,7 @@ class Station(Producer):
         )
 
         self.station_id = int(station_id)
-        self.color = color
+        self.colour = colour
         self.dir_a = direction_a
         self.dir_b = direction_b
         self.a_train = None
@@ -53,9 +53,11 @@ class Station(Producer):
             value={
                 "station_id": self.station_id,
                 "train_id": train.train_id,
+                "train_status": train.status,
                 "direction": direction,
                 "prev_station_id": prev_station_id,
-                "prev_direction": prev_direction
+                "prev_direction": prev_direction,
+                "line": self.colour
             },
         )
 
