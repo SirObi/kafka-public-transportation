@@ -31,7 +31,7 @@ class Turnstile(Producer):
 
         
         super().__init__(
-            "obi.transport_optimization.turnstile_events." + station_name,
+            "obi.transport_optimization.turnstile_events",
             key_schema=Turnstile.key_schema,
             value_schema=Turnstile.value_schema,
             num_partitions=1,
