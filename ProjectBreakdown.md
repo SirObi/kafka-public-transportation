@@ -143,7 +143,8 @@ Or at least the client side creating and uploading the schemas to the Schema Reg
 - [x] `server.py` able to read from stations topic and display stations in web UI   
 
 5. Configure the KSQL Table
-- [ ] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station (+direction?)
+- [x] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station  
+- [x] Total turnstile events show correctly on consumer server dashboard  
 
 6. End-to-end success
 
