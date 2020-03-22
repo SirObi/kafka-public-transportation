@@ -21,6 +21,7 @@ class Station:
     @classmethod
     def from_message(cls, value):
         """Given a Kafka Station message, creates and returns a station"""
+        logger.info("Creating station...")
         return Station(value["station_id"], value["station_name"], value["order"])
 
     def handle_departure(self, direction):

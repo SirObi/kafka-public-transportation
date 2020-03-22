@@ -16,13 +16,17 @@ class Lines:
         self.red_line = Line("red")
         self.green_line = Line("green")
         self.blue_line = Line("blue")
+        logger.info("Created lines")
 
     def process_message(self, message):
         """Processes a station message"""
-        if "org.chicago.cta.station" in message.topic():
+        logger.info(f"Attempting to process message... for topic {message.topic()}")
+        if "arrivals" in message.topic() or "stations" in message.topic():
             value = message.value()
-            if message.topic() == "org.chicago.cta.stations.table.v1":
+            if message.topic() == "obi.transport_optimization.chicago.cta.stations.table.v2":
+                logger.info("Received message from stations table")
                 value = json.loads(value)
+                logger.info(f"Value was {value}")
             if value["line"] == "green":
                 self.green_line.process_message(message)
             elif value["line"] == "red":
@@ -32,8 +36,9 @@ class Lines:
             else:
                 logger.debug("discarding unknown line msg %s", value["line"])
         elif "TURNSTILE_SUMMARY" == message.topic():
-            self.green_line.process_message(message)
-            self.red_line.process_message(message)
-            self.blue_line.process_message(message)
+            #self.green_line.process_message(message)
+            #self.red_line.process_message(message)
+            #self.blue_line.process_message(message)
+            pass
         else:
             logger.info("ignoring non-lines message %s", message.topic())

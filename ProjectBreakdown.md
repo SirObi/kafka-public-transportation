@@ -85,7 +85,7 @@ Accepted topics are: `*org.chicago.cta.station*` and `TURNSTILE_SUMMARY`.
 
 ## `server.py` dependencies
 
-These are the preconditions for `python consumers/server.py` not crashing.  
+These are some of the preconditions for `python consumers/server.py` not crashing.  
 1. "TURNSTILE_SUMMARY" topic exists
 2. Faust Streaming aggregation table exists
 
@@ -99,6 +99,21 @@ The class sends weather events to the Kafka REST server in the form of POST requ
 The requests include both the payload, and the AVRO schema to read it with.  
 
 Kafka REST Proxy has all the client functionality required to parse the requests, create a new topic, and write the events to the topic.  
+
+### Station (Postgres/Faust)  
+The Station data model can be a bit misleading.  
+Despite the name it actually defines the attributes of a platform in the Chicago transport network, not a station. Some of the attributes are:  
+- stop (platform) name and ID  
+- direction of the trains stopping at the platform  s
+- parent station name and ID  
+- line the station is on  
+
+### Arrival  
+It seems that arrival needs to contain the field `line` as well.  
+Otherwise an `if` block on the consumer server will cause all arrival messages to be skipped.  
+Seems like an argument in favour of having consumer-driven contract tests between Kafka clients...  
+Or at least the client side creating and uploading the schemas to the Schema Registry.  
+
 
 ## Project milestones - completion
 1. Create Kafka Producers
@@ -117,9 +132,10 @@ Kafka REST Proxy has all the client functionality required to parse the requests
 - [x] New topic contains station data  
 
 4. Configure Faust Stream Processor
-- [] Stream processor able to print out records from stations topic  
-- [] Logic to filter out unnecessary Station fields implemented  
-- [] TransformedStation data is persisted in Faust table 
+- [x] Stream processor able to print out records from stations topic  
+- [x] Logic to filter out unnecessary Station fields implemented  
+- [x] TransformedStation data is persisted in Faust table  
+- [x] `server.py` able to read from stations topic and display stations in web UI   
 
 5. Configure the KSQL Table
 - [ ] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station (+direction?)
@@ -129,3 +145,4 @@ Kafka REST Proxy has all the client functionality required to parse the requests
 - [ ] Dashboard displays list of stations on the Blue line
 - [ ] Emitting new turnstile event causes dashboard to update
 - [ ] simulation.py works and doesn't crash after 1 minute
+ 

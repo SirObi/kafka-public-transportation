@@ -41,12 +41,12 @@ class MainHandler(tornado.web.RequestHandler):
 
 def run_server():
     """Runs the Tornado Server and begins Kafka consumption"""
-    if topic_check.topic_exists("TURNSTILE_SUMMARY") is False:
-        logger.fatal(
-            "Ensure that the KSQL Command has run successfully before running the web server!"
-        )
-        exit(1)
-    if topic_check.topic_exists("org.chicago.cta.stations.table.v1") is False:
+    #if topic_check.topic_exists("TURNSTILE_SUMMARY") is False:
+    #    logger.fatal(
+    #        "Ensure that the KSQL Command has run successfully before running the web server!"
+    #    )
+    #    exit(1)
+    if topic_check.topic_exists("obi.transport_optimization.chicago.cta.stations.table.v2") is False:
         logger.fatal(
             "Ensure that Faust Streaming is running successfully before running the web server!"
         )
@@ -60,6 +60,7 @@ def run_server():
     )
     application.listen(8888)
 
+    logger.info("Server is up, building consumers...")
     # Build kafka consumers
     consumers = [
         KafkaConsumer(
@@ -68,23 +69,24 @@ def run_server():
             offset_earliest=True,
         ),
         KafkaConsumer(
-            "obi.transport_optimization.chicago.cta.stations.table.v1",
+            "obi.transport_optimization.chicago.cta.stations.table.v2",
             lines.process_message,
             offset_earliest=True,
             is_avro=False,
         ),
         KafkaConsumer(
-            "^obi.transport_optimization.arrivals.",
+            "^obi.transport_optimization.arrivals.*",
             lines.process_message,
             offset_earliest=True,
-        ),
-        KafkaConsumer(
-            "TURNSTILE_SUMMARY",
-            lines.process_message,
-            offset_earliest=True,
-            is_avro=False,
-        ),
+        )
     ]
+    #    KafkaConsumer(
+    #        "TURNSTILE_SUMMARY",
+    #        lines.process_message,
+    #        offset_earliest=True,
+    #        is_avro=False,
+    #    ),
+    #]
 
     try:
         logger.info(
