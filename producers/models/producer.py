@@ -30,18 +30,7 @@ class Producer:
         self.value_schema = value_schema
         self.num_partitions = num_partitions
         self.num_replicas = num_replicas
-
-        #
-        #
-        # TODO: Configure the broker properties below. Make sure to reference the project README
-        # and use the Host URL for Kafka and Schema Registry!
-        #
-        #
-        self.broker_properties = {
-            # TODO
-            # TODO
-            # TODO
-        }
+        self.broker_properties = {}
 
         # If the topic does not already exist, try to create it
         if self.topic_name not in Producer.existing_topics:
@@ -75,7 +64,6 @@ class Producer:
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
         self.producer.flush()
-        logger.info("producer close incomplete - skipping")
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""

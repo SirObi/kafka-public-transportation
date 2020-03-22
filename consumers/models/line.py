@@ -26,7 +26,7 @@ class Line:
     def _handle_station(self, value):
         """Adds the station to this Line's data model"""
         if value["line"] != self.color:
-            logger.info("Station didn't match any colours")
+            logger.debug("Station didn't match any colours")
             return
         self.stations[value["station_id"]] = Station.from_message(value)
 
@@ -35,6 +35,7 @@ class Line:
         value = message.value()
         prev_station_id = value.get("prev_station_id")
         prev_dir = value.get("prev_direction")
+
         if prev_dir is not None and prev_station_id is not None:
             prev_station = self.stations.get(prev_station_id)
             if prev_station is not None:
@@ -57,7 +58,6 @@ class Line:
 
     def process_message(self, message):
         """Given a kafka message, extract data"""
-        logger.info(f"process_message was called for topic {message.topic()}")
         if message.topic() == 'obi.transport_optimization.chicago.cta.stations.table.v2':
             try:
                 value = json.loads(message.value())
@@ -65,9 +65,8 @@ class Line:
             except Exception as e:
                 logger.fatal("bad station? %s, %s", value, e)
         elif "arrivals" in message.topic():
-            logger.info(f"Calling _handle.arrival for message {message.value()}")
             self._handle_arrival(message)
-        elif False: # Set the conditional to the KSQL Turnstile Summary Topic
+        elif message.topic() == "TURNSTILE_SUMMARY":
             json_data = json.loads(message.value())
             station_id = json_data.get("STATION_ID")
             station = self.stations.get(station_id)

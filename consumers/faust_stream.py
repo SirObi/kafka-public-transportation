@@ -30,7 +30,7 @@ class TransformedStation(faust.Record):
 
 
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
-input_topic = app.topic("obi.transport_optimization.chicago.cta.stations.table.v1stations", value_type=Station)
+input_topic = app.topic("obi.transport_optimization.chicago.cta.stations", value_type=Station)
 
 output_topic = app.topic("obi.transport_optimization.chicago.cta.stations.table.v2", partitions=1)
 
@@ -41,14 +41,6 @@ table = app.Table(
     changelog_topic=output_topic,
 )
 
-
-#
-#
-# TODO: Using Faust, transform input `Station` records into `TransformedStation` records. Note that
-# "line" is the color of the station. So if the `Station` record has the field `red` set to true,
-# then you would set the `line` of the `TransformedStation` record to the string `"red"`
-#
-#
 
 @app.agent(input_topic)
 async def process(tables):

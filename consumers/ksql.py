@@ -65,7 +65,6 @@ def execute_statement(statement):
             }
         )
 
-    logger.info(f"statement was {statement}")
     resp = requests.post(
         f"{KSQL_URL}/ksql",
         headers={"Content-Type": "application/vnd.ksql.v1+json"},
