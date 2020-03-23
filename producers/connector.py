@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 KAFKA_CONNECT_URL = "http://localhost:8083/connectors"
-CONNECTOR_NAME = "stations.table.v1"
+CONNECTOR_NAME = "stations2"
 
 def configure_connector():
     """Starts and configures the Kafka Connect connector"""
@@ -20,7 +20,6 @@ def configure_connector():
         logging.debug("connector already created skipping recreation")
         return
 
-    logger.info("connector code not completed skipping connector creation")
     resp = requests.post(
         KAFKA_CONNECT_URL,
         headers={"Content-Type": "application/json"},
@@ -40,7 +39,7 @@ def configure_connector():
                 "mode": "incrementing",
                 "incrementing.column.name": "stop_id",
                 "topic.prefix": "obi.transport_optimization.chicago.cta.",
-                "poll.interval.ms": "600000",
+                "poll.interval.ms": "86400000",
             }
         }),
     )

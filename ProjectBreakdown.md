@@ -1,8 +1,11 @@
+## Why this document?
 Requirements in Udacity projects are usually quite chaotically documented.   
 Therefore, I've created this document to help the reader understand the various objectives the code is supposed to achieve.   
 This guide was also meant to help me keep track of what needed to be done, in a BDD fashion.
 
-### End goal
+---
+
+## End goal
 **As a** Chicago Transport Authority executive  
 **I would like to** have a website that displays train arrivals and people getting off the trains in real time  
 **So that** I can have a more intuitive understanding of how people flow through my transportation system   
@@ -17,6 +20,41 @@ This guide was also meant to help me keep track of what needed to be done, in a 
 **And** the dashboard displays total number of people who have got off at the station so far  
 **And** the dashboard displays current weather  
 
+---
+
+## Project milestones - completion
+**1. Create Kafka Producers**
+- [x] Properly defined schema for arrival events  
+- [x] Properly defined schema for turnstile events  
+- [x] Station producer implemented
+- [x] Correctly named Kafka topic exists for each station in the simulation/in the database  
+- [x] simulation.py is able to populate topics with arrival and turnstile events
+
+**2. Configure Kafka REST Proxy Producer**
+- [x] Kafka REST Proxy creates and populates a topic with events containing {temperature, status}
+
+**3. Configure Kafka Connect**
+- [x] Connector with appropriate name gets created on Kafka Connect server  
+- [x] Connector ingests data from Postgres, creates a new topic  
+- [x] New topic contains station data  
+
+**4. Configure Faust Stream Processor**
+- [x] Stream processor able to print out records from stations topic  
+- [x] Logic to filter out unnecessary Station fields implemented  
+- [x] TransformedStation data is persisted in Faust table  
+- [x] `server.py` able to read from stations topic and display stations in web UI   
+
+**5. Configure the KSQL Table**
+- [x] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station  
+- [x] Total turnstile events show correctly on consumer server dashboard  
+
+**6. End-to-end success**
+- [x] Dashboard displays list of stations on the Blue, Red and Green lines
+- [x] Emitting new turnstile event causes dashboard to update
+- [x] simulation.py works and doesn't crash after 1 minute
+
+---
+
 ### Note
 In order to demonstrate the different parts of the Kafka ecosystem, Udacity has shoehorned them into this project in rather unusual ways.
 Static data from Postgres is run through a Faust Structured streaming application to help create data models.
@@ -25,26 +63,9 @@ Similarly, the server uses Kafka REST Proxy to talk to the REST weather server, 
 These (counterintuitive) solutions can slow you down while trying to understand the codebase, so just bear that in mind:
 the sole focus of this project is to showcase the different parts of Kafka, and how they relate to the outside world.
 
-### Milestones
-**Given** I have access to a stream of arrival events from turnstile hardware  
-**When** an arrival event is emitted  
-**Then** the event is put in a topic by a Kafka producer  
+---
 
-**Given** I have a Postgres database with static station data  
-**And** I want to have the data as a Kafka topic instead  
-**When** I run the connector  
-**Then** the raw data is placed in a Kafka topic  
-
-**Given** I have a Kafka topic with raw station data  
-**When** I transform it with Faust Stream processing  
-**Then** I have a new topic with station data in a more convenient format  
-
-**Given** I have a Kafka topic for arrival events for given station  
-**And** I have a Kafka topic with transformed station data  
-**When** a new event has arrived in the Kafka topic  
-**Then** the event is joined on the table ....?
-
-## Architecture - Kafka Consumers
+## Architecture notes - Kafka Consumers
 There are two classes in the server code that handle incoming messages from a Kafka topic: Line and Weather.  
 
 ### Line
@@ -88,14 +109,15 @@ Messages hit Lines first, and then get passed on to one of the three Line object
 Accepted topics are: `*org.chicago.cta.station*` and `TURNSTILE_SUMMARY`.  
 
 
-## `server.py` dependencies
+### `server.py` dependencies
 
 These are some of the preconditions for `python consumers/server.py` not crashing.  
 1. "TURNSTILE_SUMMARY" topic exists
 2. Faust Streaming aggregation table exists
 
+---
 
-## Architecture - Kafka Producers  
+## Architecture notes - Kafka Producers  
 
 ### Weather class + REST Proxy  
 The Weather class is not a Kafka Producer.    
@@ -118,36 +140,3 @@ It seems that arrival needs to contain the field `line` as well.
 Otherwise an `if` block on the consumer server will cause all arrival messages to be skipped.  
 Seems like an argument in favour of having consumer-driven contract tests between Kafka clients...  
 Or at least the client side creating and uploading the schemas to the Schema Registry.  
-
-
-## Project milestones - completion
-1. Create Kafka Producers
-- [x] Properly defined schema for arrival events  
-- [x] Properly defined schema for turnstile events  
-- [x] Station producer implemented
-- [x] Correctly named Kafka topic exists for each station in the simulation/in the database  
-- [x] simulation.py is able to populate topics with arrival and turnstile events
-
-2. Configure Kafka REST Proxy Producer
-- [x] Kafka REST Proxy creates and populates a topic with events containing {temperature, status}
-
-3. Configure Kafka Connect
-- [x] Connector with appropriate name gets created on Kafka Connect server  
-- [x] Connector ingests data from Postgres, creates a new topic  
-- [x] New topic contains station data  
-
-4. Configure Faust Stream Processor
-- [x] Stream processor able to print out records from stations topic  
-- [x] Logic to filter out unnecessary Station fields implemented  
-- [x] TransformedStation data is persisted in Faust table  
-- [x] `server.py` able to read from stations topic and display stations in web UI   
-
-5. Configure the KSQL Table
-- [x] KSQL aggregates turnstile events into `TURNSTILE_SUMMARY` for each station  
-- [x] Total turnstile events show correctly on consumer server dashboard  
-
-6. End-to-end success
-
-- [x] Dashboard displays list of stations on the Blue, Red and Green lines
-- [ ] Emitting new turnstile event causes dashboard to update
-- [ ] simulation.py works and doesn't crash after 1 minute
